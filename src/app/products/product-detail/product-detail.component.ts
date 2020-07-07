@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Product } from '../product.interface';
 import { FavouriteService } from "../../services/favourite.service";
+import { ActivatedRoute } from '@angular/router';
+import { ProductService } from 'src/app/services/product.service';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
@@ -10,9 +14,12 @@ import { FavouriteService } from "../../services/favourite.service";
 export class ProductDetailComponent implements OnInit {
 
   @Input() product: Product;
+  product$: Observable<Product>;
 
   constructor(
-    private favouriteService: FavouriteService
+    private favouriteService: FavouriteService,
+    private productService: ProductService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   newFavourite(product: Product) {
@@ -20,6 +27,14 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const id = this.activatedRoute.snapshot.params["id"];
+    
+    this.product$ = this
+                      .productService
+                      .products$
+                      .pipe(
+                        map(products => products.find(p => p.id == id))
+                      )
   }
 
 }
