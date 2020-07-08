@@ -27,7 +27,7 @@ export class ProductService {
                       .get<Product[]>(url)
                       .pipe(
                         delay(1500),
-                        tap(console.table),
+                      //  tap(console.table),
                         shareReplay(),
                         catchError(this.handleError)
                       );
@@ -35,6 +35,10 @@ export class ProductService {
 
   insertProduct(newProduct: Product): Observable<Product> {
     return this.http.post<Product>(this.baseUrl, newProduct);
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.http.delete(this.baseUrl + id);           
   }
 
   private handleError(error: HttpErrorResponse) {

@@ -10,19 +10,25 @@
 <!-- Pas d'erreur... -->
 <div *ngIf="!errorMessage">
     <h3>
-        {{ productsNb$ | async }} products -  
+        {{ productsNb$ | async }} products 
+        <span *ngIf="filtered$ | async">(filtered)</span>
+        |   
         {favourites, plural,
             =0 {no favourite}
             =1 {1 favourite}
             other {{{favourites}} favourites}
         }
     </h3>
+
+    <div>
+        Search: <input type="text" [formControl]="filter" placeholder="filter by name" />
+    </div>
     
     <ng-template #loading>
         <h2 class="loading">Loading products</h2>
     </ng-template>
     
-    <ul class="products" *ngIf="products$ | async as products;else loading">
+    <ul class="products" *ngIf="filteredProducts$ | async as products;else loading">
         <li *ngFor="let product of products | slice:start:end"
             [class.discontinued]="product.discontinued"
             [class.selected]="selectedProduct === product"

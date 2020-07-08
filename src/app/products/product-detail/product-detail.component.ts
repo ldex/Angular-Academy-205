@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Product } from '../product.interface';
 import { FavouriteService } from "../../services/favourite.service";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProductService } from 'src/app/services/product.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -19,8 +19,25 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private favouriteService: FavouriteService,
     private productService: ProductService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) { }
+
+  delete(id: number) {
+    if(window.confirm("Are you sure ??")) {
+      this
+      .productService
+      .deleteProduct(id)
+      .subscribe(
+        () => {
+          console.log("Product deleted!");
+          this.productService.initProducts();
+          this.router.navigateByUrl("/products");
+        },
+        error => console.log("Could not delete product: " + error)
+      )
+    }
+  }
 
   newFavourite(product: Product) {
     this.favouriteService.addToFavourites(product);
